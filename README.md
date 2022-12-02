@@ -7,6 +7,7 @@ Create and test all strategies.
 - [] crypto ticker functions
     - [x] by market cap
     - [x] by range
+    - [] by sector
 - [] stock ticker functions
     - [] by market cap
     - [] by sector
@@ -14,8 +15,13 @@ Create and test all strategies.
     - [] by index
     - [] by exchange
 - [] useful functions
-    - check for suplicates
+    - check for duplicates
 - [] economic data (FRED)
 - [] crypto data
 - [] statista data
 - [] function to read data from page
+
+
+#### plan
+
+1. Get data functyions. No sorting needed

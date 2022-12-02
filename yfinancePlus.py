@@ -1,12 +1,12 @@
 import requests
+import asyncio
+import aiohttp
 from bs4 import BeautifulSoup as bs
 import utils
-import time
-from tkinter import filedialog
 
 class crypto_tickers:
 
-    def crypto_by_rank(self, rank_range):
+    async def crypto_by_rank(self, rank_range, file_path):
 
         session = requests.Session()
 
@@ -28,9 +28,7 @@ class crypto_tickers:
         
         urls.append(f'https://finance.yahoo.com/crypto?offset={offset + sets_of_count * count}&count={rank_range[1]-offset}')
 
-        file_path = filedialog.askopenfilename()
-
-        with open(file_path, 'r+') as file:
+        with open(file_path, 'w+') as file:
             file.truncate(0)
             for url in urls:
                 response = session.get(url, headers=utils.headers)
@@ -45,7 +43,9 @@ class crypto_tickers:
 
                     file.write(f'{name},{ticker},{mc}\n')
 
-    def crypto_by_mc(self, mc_range):
+    asyncio.run(crypto_by_rank)
+
+    def crypto_by_mc(self, mc_range, file_path):
 
         session = requests.Session()
 
@@ -65,8 +65,7 @@ class crypto_tickers:
         
         urls.append(f'https://finance.yahoo.com/crypto?offset={offset + sets_of_count * count}&count={rank_limit-offset}')
 
-        file_path = filedialog.askopenfilename()
-        with open(file_path, 'r+') as file:
+        with open(file_path, 'w+') as file:
             file.truncate(0)
             for url in urls:
                 response = session.get(url, headers=utils.headers)
@@ -84,12 +83,12 @@ class crypto_tickers:
                 if int(mc) <= mc_range[1]:
                     break
 
-    def check_duplicate_tickers(self):
+    def check_duplicate_tickers(self, check_file_path, duplicates_file_path):
         duplicates = []
-        with open('crypto_tickers.txt', 'r+') as file:
+        with open(check_file_path, 'w+') as file:
             seen = set()
             file = file.read().splitlines()
-            with open('duplicate_tickers.txt', 'r+') as dup_f:
+            with open(duplicates_file_path, 'w+') as dup_f:
                 dup_f.truncate(0)
                 for line in file:
                     line_lower = line.lower()
@@ -100,6 +99,8 @@ class crypto_tickers:
                         seen.add(line_lower)
                 
         return str(len(duplicates)*100/len(file))
+    
+    
 
 crypto_tickers = crypto_tickers()
 
@@ -107,6 +108,17 @@ crypto_tickers = crypto_tickers()
 
 # crypto_tickers.crypto_by_rank(rank_range=[1, 0])
 
-crypto_tickers.crypto_by_mc(mc_range=[100_000_000, 1_000_000])
+crypto_tickers.crypto_by_mc(mc_range=[100_000_000, 1_000_000], file_path='100m_1m.txt')
 
-print(str(crypto_tickers.check_duplicate_tickers()) + "%")
+#print(str(crypto_tickers.check_duplicate_tickers(check_file_path='100m_1m.txt', duplicates_file_path='100m_1m_dup.txt')) + "%")
+
+# remove input file statements from the functions
+# just ask outside of the class and use these as inputs into the functrions
+# less control when runnning but makes more sense for application use
+
+# use w+ for txt file mode to make new files if needed
+
+#change default title of tinker file window with title='jsdaodjo' also file types
+
+############
+# function to find new coins - started q4
